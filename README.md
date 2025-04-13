@@ -58,4 +58,4 @@ Estrutura de Pastas
 
 ---
 
-Se quiser, posso completar esse README com instruções de como rodar o projeto localmente, configurar o banco de dados, ou até adicionar badges e links automáticos do GitHub. Deseja isso também?
+
