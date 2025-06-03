@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.*;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -27,17 +29,17 @@ public class User {
     @Column(nullable = false, length = 50, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 60, unique = true)
+    @Column(nullable = false, length = 60)
     private String password;
 
     @Column(nullable = false, length = 50)
     private UserEnum type = UserEnum.STUDENT;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
-    @LastModifiedDate
+    @UpdateTimestamp
     @Column(name = "updated_at", updatable = false)
     private Date updatedAt;
 
