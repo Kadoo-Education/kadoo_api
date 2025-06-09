@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(UserExistsException.class)
-    private ResponseEntity<String> userExistsHandler(UserExistsException exception){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
+public class EdictExistsHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(EdictExistsException.class)
+    private ResponseEntity<String> edictExistsHandler(EdictExistsException exception){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Edict already exists");
     }
 }
