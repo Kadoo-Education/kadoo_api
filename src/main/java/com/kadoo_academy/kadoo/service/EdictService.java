@@ -6,7 +6,7 @@ import com.kadoo_academy.kadoo.dto.UpdateEdictDto;
 import com.kadoo_academy.kadoo.exceptions.EdictExistsException;
 import com.kadoo_academy.kadoo.exceptions.EdictNotFoundException;
 import com.kadoo_academy.kadoo.models.Edict;
-import com.kadoo_academy.kadoo.repository.EdictRepository;
+import com.kadoo_academy.kadoo.repositories.EdictRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

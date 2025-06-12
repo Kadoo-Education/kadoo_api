@@ -1,6 +1,8 @@
 package com.kadoo_academy.kadoo.repositories;
 
+import com.kadoo_academy.kadoo.models.Edict;
 import com.kadoo_academy.kadoo.models.User;
+import com.kadoo_academy.kadoo.models.UserEdict;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
