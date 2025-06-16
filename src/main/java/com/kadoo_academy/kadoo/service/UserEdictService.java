@@ -11,7 +11,9 @@ import com.kadoo_academy.kadoo.repositories.EdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserEdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,10 @@ public class UserEdictService {
         User user = userRepository.findById(dto.userSubscribe()).orElseThrow(() -> new IllegalArgumentException("Usuário com ID " + dto.userSubscribe() + " não encontrado."));
 
         if (!UserEnum.STUDENT.equals(user.getType())) {
-            throw new IllegalStateException("Apenas usuários do tipo STUDENT podem se inscrever em editais.");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Apenas usuários do tipo STUDENT podem se inscrever em editais."
+            );
         }
 
         Edict edict = edictRepository.findById(dto.edict()).orElseThrow(() -> new IllegalArgumentException("Edital com ID " + dto.edict() + " não encontrado."));
@@ -65,7 +70,10 @@ public class UserEdictService {
         List<Long> notFoundUserIds = inputUserIds.stream().filter(id -> !foundUserIds.contains(id)).toList();
 
         if (!notFoundUserIds.isEmpty()) {
-            throw new IllegalArgumentException("Usuários com os seguintes IDs não foram encontrados: " + notFoundUserIds);
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Usuários com os seguintes IDs não foram encontrados: " + notFoundUserIds
+            );
         }
 
         List<UserEdict> newSubscriptions = new ArrayList<>();
@@ -101,7 +109,10 @@ public class UserEdictService {
             if (!notStudentUserIds.isEmpty()) {
                 message.append(" - Usuários que não são estudantes: ").append(notStudentUserIds).append("\n");
             }
-            throw new IllegalArgumentException(message.toString());
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    message.toString()
+            );
         }
         return dto;
     }
