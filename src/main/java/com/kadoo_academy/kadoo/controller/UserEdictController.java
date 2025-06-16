@@ -23,9 +23,9 @@ public class UserEdictController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping()
-    public List listEdictUser (@RequestBody UserEdictDTO dto) {
-        return userEdictService.listEdictUser(dto);
+    @GetMapping("/{id}")
+    public List listEdictUser (@PathVariable Long id) {
+        return userEdictService.listEdictUser(id);
     }
 
     @PostMapping("/subscribe-multiple")

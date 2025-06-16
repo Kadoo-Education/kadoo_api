@@ -53,8 +53,8 @@ public class UserEdictService {
         return dto;
     }
 
-    public List listEdictUser(UserEdictDTO dto) {
-        User user = userRepository.findById(dto.userSubscribe()).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+    public List listEdictUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
         List<UserEdict> userEdicts = userEdictRepository.findByUserSubscribe(user);
         return userEdicts.stream().map(UserEdict::getEdict).collect(Collectors.toList());
     }
