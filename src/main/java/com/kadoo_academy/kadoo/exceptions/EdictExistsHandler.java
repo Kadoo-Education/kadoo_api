@@ -10,6 +10,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class EdictExistsHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EdictExistsException.class)
     private ResponseEntity<String> edictExistsHandler(EdictExistsException exception){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("Edict already exists");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("edict doesn't exist");
     }
 }

@@ -36,8 +36,12 @@ public class EdictService {
                 edict.getLinkDoc(),edict.getStartDate(),
                 edict.getEndDate(),edict.isActive()));
     }
-    public Edict getEdictById(Long id){
-        return edictRepository.findById(id).orElseThrow(() -> new EdictExistsException("Edict already exists"));
+    public ResponseEdictDto getEdictById(Long id){
+        Edict edict = edictRepository.findById(id).orElseThrow(() -> new EdictExistsException("Edict doesn't exist"));
+        return new ResponseEdictDto(
+                edict.getId(),edict.getTitle(),edict.getDescription(),
+                edict.getLinkDoc(), edict.getStartDate(),
+                edict.getEndDate(), edict.isActive());
     }
 
     public void updateEdictById(Long id, UpdateEdictDto updateEdictDto){
@@ -54,11 +58,10 @@ public class EdictService {
 
     public void deleteEdictById(Long id){
         boolean idExists = edictRepository.existsById(id);
-        if (idExists){
-            edictRepository.deleteById(id);
-        } else {
+        if (!idExists){
             throw new EdictExistsException("Edict already exists");
         }
+        edictRepository.deleteById(id);
     }
 }
 

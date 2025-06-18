@@ -3,7 +3,6 @@ package com.kadoo_academy.kadoo.controller;
 import com.kadoo_academy.kadoo.dto.CreateEdictDto;
 import com.kadoo_academy.kadoo.dto.ResponseEdictDto;
 import com.kadoo_academy.kadoo.dto.UpdateEdictDto;
-import com.kadoo_academy.kadoo.models.Edict;
 import com.kadoo_academy.kadoo.service.EdictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
 
 
 @RestController
-@RequestMapping("/api/edict")
+@RequestMapping("/edict")
 public class EdictController {
 
     @Autowired
@@ -33,11 +32,7 @@ public class EdictController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseEdictDto> getEdictById(@PathVariable ("id") Long id) {
-        Edict edictById = edictService.getEdictById(id);
-            ResponseEdictDto edictDto = new ResponseEdictDto(
-                    edictById.getId(),edictById.getTitle(),edictById.getDescription(),
-                    edictById.getLinkDoc(), edictById.getStartDate(),
-                    edictById.getEndDate(), edictById.isActive());
+        ResponseEdictDto edictDto = edictService.getEdictById(id);
             return ResponseEntity.ok().body(edictDto);
     }
 
