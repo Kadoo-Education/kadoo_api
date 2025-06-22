@@ -2,7 +2,7 @@ package com.kadoo_academy.kadoo.service;
 
 import com.kadoo_academy.kadoo.dto.MultipleUserSubscriptionDTO;
 import com.kadoo_academy.kadoo.dto.UserEdictDTO;
-import com.kadoo_academy.kadoo.exceptions.UserEdictExistException;
+import com.kadoo_academy.kadoo.exceptions.customExceptions.UserEdictExistException;
 import com.kadoo_academy.kadoo.models.Edict;
 import com.kadoo_academy.kadoo.models.User;
 import com.kadoo_academy.kadoo.models.UserEdict;
@@ -29,16 +29,16 @@ public class UserEdictService {
     private EdictRepository edictRepository;
 
     public UserEdictDTO subscribeUserEdict(UserEdictDTO dto) {
-        User user = userRepository.findById(dto.userSubscribe()).orElseThrow(() -> new IllegalArgumentException("Usuário com ID " + dto.userSubscribe() + " não encontrado."));
+        User user = userRepository.findById(dto.userSubscribe()).orElseThrow(() -> new IllegalArgumentException("User with ID " + dto.userSubscribe() + " was not found."));
 
         if (!UserEnum.STUDENT.equals(user.getType())) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "Apenas usuários do tipo STUDENT podem se inscrever em editais."
+                    "Only users of type 'STUDENT' are allowed to apply to edicts."
             );
         }
 
-        Edict edict = edictRepository.findById(dto.edict()).orElseThrow(() -> new IllegalArgumentException("Edital com ID " + dto.edict() + " não encontrado."));
+        Edict edict = edictRepository.findById(dto.edict()).orElseThrow(() -> new IllegalArgumentException("Edict with ID " + dto.edict() + " was not found."));
 
         boolean alreadySubscribed = userEdictRepository.existsByUserSubscribeAndEdict(user, edict);
         if (alreadySubscribed) {
@@ -54,13 +54,13 @@ public class UserEdictService {
     }
 
     public List listEdictUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
         List<UserEdict> userEdicts = userEdictRepository.findByUserSubscribe(user);
         return userEdicts.stream().map(UserEdict::getEdict).collect(Collectors.toList());
     }
 
     public MultipleUserSubscriptionDTO subscribeMultipleUsersToEdict(MultipleUserSubscriptionDTO dto) {
-        Edict edict = edictRepository.findById(dto.edictId()).orElseThrow(() -> new IllegalArgumentException("Edital com ID " + dto.edictId() + " não encontrado."));
+        Edict edict = edictRepository.findById(dto.edictId()).orElseThrow(() -> new IllegalArgumentException("Edict with ID " + dto.edictId() + " was not found"));
 
         List<Long> inputUserIds = dto.userIds();
         List<User> users = userRepository.findAllById(inputUserIds);
@@ -72,7 +72,7 @@ public class UserEdictService {
         if (!notFoundUserIds.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "Usuários com os seguintes IDs não foram encontrados: " + notFoundUserIds
+                    "Users with the following IDs were not found: " + notFoundUserIds
             );
         }
 
@@ -102,12 +102,12 @@ public class UserEdictService {
         userEdictRepository.saveAll(newSubscriptions);
 
         if (!alreadySubscribedUserIds.isEmpty() || !notStudentUserIds.isEmpty()) {
-            StringBuilder message = new StringBuilder("Algumas inscrições foram ignoradas:\n");
+            StringBuilder message = new StringBuilder("Some applications were ignored:\n");
             if (!alreadySubscribedUserIds.isEmpty()) {
-                message.append(" - Usuários já inscritos: ").append(alreadySubscribedUserIds).append("\n");
+                message.append(" - User already signed up for the edict: ").append(alreadySubscribedUserIds).append("\n");
             }
             if (!notStudentUserIds.isEmpty()) {
-                message.append(" - Usuários que não são estudantes: ").append(notStudentUserIds).append("\n");
+                message.append(" - Users that aren't students: ").append(notStudentUserIds).append("\n");
             }
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
