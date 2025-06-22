@@ -104,7 +104,7 @@ public class UserEdictService {
         if (!alreadySubscribedUserIds.isEmpty() || !notStudentUserIds.isEmpty()) {
             StringBuilder message = new StringBuilder("Some applications were ignored:\n");
             if (!alreadySubscribedUserIds.isEmpty()) {
-                message.append(" - User already signed up for the edict: ").append(alreadySubscribedUserIds).append("\n");
+                message.append(" - Users already signed up for the edict: ").append(alreadySubscribedUserIds).append("\n");
             }
             if (!notStudentUserIds.isEmpty()) {
                 message.append(" - Users that aren't students: ").append(notStudentUserIds).append("\n");
