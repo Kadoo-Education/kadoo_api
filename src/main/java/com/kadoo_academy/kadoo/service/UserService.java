@@ -6,6 +6,8 @@ import com.kadoo_academy.kadoo.exceptions.customExceptions.UserNotFoundException
 import com.kadoo_academy.kadoo.models.User;
 import com.kadoo_academy.kadoo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +19,12 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository){
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
 
     public Stream<ListUsersDTO> listUsers() {
         List<User> userEntity = userRepository.findAll();
@@ -41,10 +49,13 @@ public class UserService {
             throw new UserExistsException();
         }
 
+        String encoder = this.passwordEncoder.encode(responseUserDTO.password());
+
+
         User user = new User();
         user.setName(responseUserDTO.name());
         user.setEmail(responseUserDTO.email());
-        user.setPassword(responseUserDTO.password());
+        user.setPassword(encoder);
 
         userRepository.save(user);
         return responseUserDTO;
@@ -65,10 +76,13 @@ public class UserService {
     public void updateUser(Long id, UpdateUserDTO updateUserDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        String encoder = this.passwordEncoder.encode(updateUserDTO.password());
+
+
         user.setId(id);
         user.setName(updateUserDTO.name());
         user.setEmail(updateUserDTO.email());
-        user.setPassword(updateUserDTO.password());
+        user.setPassword(encoder);
 
         userRepository.save(user);
     }
