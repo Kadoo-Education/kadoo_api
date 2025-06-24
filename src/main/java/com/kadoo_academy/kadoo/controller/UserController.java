@@ -1,9 +1,8 @@
 package com.kadoo_academy.kadoo.controller;
 
 
-import com.kadoo_academy.kadoo.dto.Request.CreateUserDTO;
-import com.kadoo_academy.kadoo.dto.Request.DeleteUserDTO;
 import com.kadoo_academy.kadoo.dto.Response.ListUsersDTO;
+import com.kadoo_academy.kadoo.dto.Response.ResponseUserDTO;
 import com.kadoo_academy.kadoo.dto.Request.UpdateUserDTO;
 import com.kadoo_academy.kadoo.models.User;
 import com.kadoo_academy.kadoo.service.UserService;
@@ -23,13 +22,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping()
-    public ResponseEntity<CreateUserDTO> createUser (@RequestBody CreateUserDTO userDTO){
+    public ResponseEntity<ResponseUserDTO> createUser (@RequestBody ResponseUserDTO userDTO){
         userService.createUser(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<DeleteUserDTO> deleteUser(@PathVariable("id") Long id){
+    public ResponseEntity<ResponseUserDTO> deleteUser(@PathVariable("id") Long id){
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

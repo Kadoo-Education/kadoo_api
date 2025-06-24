@@ -1,13 +1,15 @@
 package com.kadoo_academy.kadoo.service;
 
-import com.kadoo_academy.kadoo.dto.Request.CreateUserDTO;
 import com.kadoo_academy.kadoo.dto.Request.UpdateUserDTO;
 import com.kadoo_academy.kadoo.dto.Response.ListUsersDTO;
-import com.kadoo_academy.kadoo.exceptions.UserExistsException;
-import com.kadoo_academy.kadoo.exceptions.UserNotFoundException;
+import com.kadoo_academy.kadoo.dto.Response.ResponseUserDTO;
+import com.kadoo_academy.kadoo.exceptions.customExceptions.UserExistsException;
+import com.kadoo_academy.kadoo.exceptions.customExceptions.UserNotFoundException;
 import com.kadoo_academy.kadoo.models.User;
 import com.kadoo_academy.kadoo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +21,17 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository){
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
 
     public Stream<ListUsersDTO> listUsers() {
         List<User> userEntity = userRepository.findAll();
         return userEntity.stream().map(user -> new ListUsersDTO(user.getId(), user.getName(),
-                user.getEmail(), user.getType(), user.getActive(), user.getCreatedAt(), user.getUpdatedAt()));
+                user.getEmail(), user.getType(), user.getActive(), user.getCreatedAt()));
     }
 
     public Optional<User> getUserById(Long id) {
@@ -36,20 +44,23 @@ public class UserService {
         return userNotFound;
     }
 
-    public CreateUserDTO createUser(CreateUserDTO createUserDTO) {
-        User userAlreadyExists = userRepository.findByEmail(createUserDTO.email());
+    public ResponseUserDTO createUser(ResponseUserDTO responseUserDTO) {
+        User userAlreadyExists = userRepository.findByEmail(responseUserDTO.email());
 
         if (userAlreadyExists != null) {
             throw new UserExistsException();
         }
 
+        String encoder = this.passwordEncoder.encode(responseUserDTO.password());
+
+
         User user = new User();
-        user.setName(createUserDTO.name());
-        user.setEmail(createUserDTO.email());
-        user.setPassword(createUserDTO.password());
+        user.setName(responseUserDTO.name());
+        user.setEmail(responseUserDTO.email());
+        user.setPassword(encoder);
 
         userRepository.save(user);
-        return createUserDTO;
+        return responseUserDTO;
     }
 
     public void deleteUser(Long id) {
@@ -67,10 +78,13 @@ public class UserService {
     public void updateUser(Long id, UpdateUserDTO updateUserDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        String encoder = this.passwordEncoder.encode(updateUserDTO.password());
+
+
         user.setId(id);
         user.setName(updateUserDTO.name());
         user.setEmail(updateUserDTO.email());
-        user.setPassword(updateUserDTO.password());
+        user.setPassword(encoder);
 
         userRepository.save(user);
     }
