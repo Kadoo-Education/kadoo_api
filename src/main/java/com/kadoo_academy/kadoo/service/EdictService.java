@@ -1,8 +1,8 @@
 package com.kadoo_academy.kadoo.service;
 
-import com.kadoo_academy.kadoo.dto.CreateEdictDto;
-import com.kadoo_academy.kadoo.dto.ResponseEdictDto;
-import com.kadoo_academy.kadoo.dto.UpdateEdictDto;
+import com.kadoo_academy.kadoo.dto.Request.CreateEdictDto;
+import com.kadoo_academy.kadoo.dto.Response.ResponseEdictDto;
+import com.kadoo_academy.kadoo.dto.Request.UpdateEdictDto;
 import com.kadoo_academy.kadoo.exceptions.EdictExistsException;
 import com.kadoo_academy.kadoo.exceptions.EdictNotFoundException;
 import com.kadoo_academy.kadoo.models.Edict;

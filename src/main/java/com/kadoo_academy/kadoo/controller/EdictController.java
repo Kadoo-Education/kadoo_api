@@ -1,8 +1,8 @@
 package com.kadoo_academy.kadoo.controller;
 
-import com.kadoo_academy.kadoo.dto.CreateEdictDto;
-import com.kadoo_academy.kadoo.dto.ResponseEdictDto;
-import com.kadoo_academy.kadoo.dto.UpdateEdictDto;
+import com.kadoo_academy.kadoo.dto.Request.CreateEdictDto;
+import com.kadoo_academy.kadoo.dto.Response.ResponseEdictDto;
+import com.kadoo_academy.kadoo.dto.Request.UpdateEdictDto;
 import com.kadoo_academy.kadoo.service.EdictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

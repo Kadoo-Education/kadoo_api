@@ -1,6 +1,8 @@
 package com.kadoo_academy.kadoo.service;
 
-import com.kadoo_academy.kadoo.dto.*;
+import com.kadoo_academy.kadoo.dto.Request.CreateUserDTO;
+import com.kadoo_academy.kadoo.dto.Request.UpdateUserDTO;
+import com.kadoo_academy.kadoo.dto.Response.ListUsersDTO;
 import com.kadoo_academy.kadoo.exceptions.UserExistsException;
 import com.kadoo_academy.kadoo.exceptions.UserNotFoundException;
 import com.kadoo_academy.kadoo.models.User;

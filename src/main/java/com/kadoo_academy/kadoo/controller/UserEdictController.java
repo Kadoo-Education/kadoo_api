@@ -1,7 +1,7 @@
 package com.kadoo_academy.kadoo.controller;
 
-import com.kadoo_academy.kadoo.dto.MultipleUserSubscriptionDTO;
-import com.kadoo_academy.kadoo.dto.UserEdictDTO;
+import com.kadoo_academy.kadoo.dto.Request.MultipleUserSubscriptionDTO;
+import com.kadoo_academy.kadoo.dto.Request.UserEdictDTO;
 import com.kadoo_academy.kadoo.service.UserEdictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
