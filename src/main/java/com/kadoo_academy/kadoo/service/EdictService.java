@@ -2,6 +2,7 @@ package com.kadoo_academy.kadoo.service;
 
 import com.kadoo_academy.kadoo.dto.CreateEdictDto;
 import com.kadoo_academy.kadoo.dto.ResponseEdictDto;
+import com.kadoo_academy.kadoo.dto.UpdateEdictActiveDto;
 import com.kadoo_academy.kadoo.dto.UpdateEdictDto;
 import com.kadoo_academy.kadoo.exceptions.EdictExistsException;
 import com.kadoo_academy.kadoo.exceptions.EdictNotFoundException;
@@ -26,6 +27,7 @@ public class EdictService {
         entity.setLinkDoc(createEdictDto.linkDoc());
         entity.setEndDate(createEdictDto.endDate());
         entity.setStartDate(createEdictDto.startDate());
+        entity.setTag(createEdictDto.tag());
         edictRepository.save(entity);
         return createEdictDto;
     }
@@ -34,14 +36,14 @@ public class EdictService {
         return entity.stream().map(edict -> new ResponseEdictDto(
                 edict.getId(),edict.getTitle(),edict.getDescription(),
                 edict.getLinkDoc(),edict.getStartDate(),
-                edict.getEndDate(),edict.isActive()));
+                edict.getEndDate(),edict.isActive(),edict.getTag()));
     }
     public ResponseEdictDto getEdictById(Long id){
         Edict edict = edictRepository.findById(id).orElseThrow(() -> new EdictExistsException("Edict doesn't exist"));
         return new ResponseEdictDto(
                 edict.getId(),edict.getTitle(),edict.getDescription(),
                 edict.getLinkDoc(), edict.getStartDate(),
-                edict.getEndDate(), edict.isActive());
+                edict.getEndDate(),edict.isActive(),edict.getTag());
     }
 
     public void updateEdictById(Long id, UpdateEdictDto updateEdictDto){
@@ -59,9 +61,14 @@ public class EdictService {
     public void deleteEdictById(Long id){
         boolean idExists = edictRepository.existsById(id);
         if (!idExists){
-            throw new EdictExistsException("Edict already exists");
+            throw new EdictExistsException("Edict doesn't exist");
         }
         edictRepository.deleteById(id);
+    }
+    public void EdictActive(Long id, UpdateEdictActiveDto updateEdict){
+     Edict edict = edictRepository.findById(id).orElseThrow(()-> new EdictExistsException("Edict not found"));
+     edict.setActive(updateEdict.getActive());
+     edictRepository.save(edict);
     }
 }
 

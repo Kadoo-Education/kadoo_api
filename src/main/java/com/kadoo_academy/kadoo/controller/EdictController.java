@@ -2,6 +2,7 @@ package com.kadoo_academy.kadoo.controller;
 
 import com.kadoo_academy.kadoo.dto.CreateEdictDto;
 import com.kadoo_academy.kadoo.dto.ResponseEdictDto;
+import com.kadoo_academy.kadoo.dto.UpdateEdictActiveDto;
 import com.kadoo_academy.kadoo.dto.UpdateEdictDto;
 import com.kadoo_academy.kadoo.service.EdictService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,11 @@ public class EdictController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEdictById(@PathVariable ("id") Long id){
         edictService.deleteEdictById(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<UpdateEdictActiveDto> updateEdictActive(@PathVariable ("id") Long id, @RequestBody UpdateEdictActiveDto updateEdictActive){
+        edictService.EdictActive(id,updateEdictActive);
         return ResponseEntity.noContent().build();
     }
 }

@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -44,5 +46,6 @@ public class User {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean active = true;
 
-
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    private List<Edict> edictList = new ArrayList<>();
 }
