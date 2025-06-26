@@ -48,4 +48,7 @@ public class User {
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Edict> edictList = new ArrayList<>();
+
+    @OneToOne
+    private ProfileStudent student;
 }

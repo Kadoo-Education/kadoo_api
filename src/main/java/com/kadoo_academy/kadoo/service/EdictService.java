@@ -7,12 +7,15 @@ import com.kadoo_academy.kadoo.dto.UpdateEdictDto;
 import com.kadoo_academy.kadoo.exceptions.EdictExistsException;
 import com.kadoo_academy.kadoo.exceptions.EdictNotFoundException;
 import com.kadoo_academy.kadoo.models.Edict;
+import com.kadoo_academy.kadoo.models.enums.UserEnum;
 import com.kadoo_academy.kadoo.repositories.EdictRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Stream;
+
+import static com.kadoo_academy.kadoo.models.enums.UserEnum.*;
 
 
 @Service

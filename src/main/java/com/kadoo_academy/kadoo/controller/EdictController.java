@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Stream;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/edict")
 public class EdictController {
