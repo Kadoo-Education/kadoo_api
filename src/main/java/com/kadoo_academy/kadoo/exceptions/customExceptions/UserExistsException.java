@@ -1,4 +1,4 @@
-package com.kadoo_academy.kadoo.exceptions;
+package com.kadoo_academy.kadoo.exceptions.customExceptions;
 
 public class UserExistsException extends RuntimeException{
     public UserExistsException(){
