@@ -4,7 +4,6 @@ public class UserExistsException extends RuntimeException{
     public UserExistsException(){
         super();
     }
-
     public UserExistsException(String mensagem){
         super(mensagem);
     }

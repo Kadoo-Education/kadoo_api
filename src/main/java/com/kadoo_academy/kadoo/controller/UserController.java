@@ -1,6 +1,7 @@
 package com.kadoo_academy.kadoo.controller;
 
 
+import com.kadoo_academy.kadoo.dto.GetUserByIdDTO;
 import com.kadoo_academy.kadoo.dto.ListUsersDTO;
 import com.kadoo_academy.kadoo.dto.ResponseUserDTO;
 import com.kadoo_academy.kadoo.dto.UpdateUserDTO;
@@ -34,8 +35,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserId(@PathVariable("id") Long id){
-        Optional<User> user = userService.getUserById(id);
+    public ResponseEntity<GetUserByIdDTO> getUserId(@PathVariable("id") Long id){
+        GetUserByIdDTO user = userService.getUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 

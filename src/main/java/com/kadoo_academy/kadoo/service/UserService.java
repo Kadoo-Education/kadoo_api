@@ -26,21 +26,6 @@ public class UserService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public Stream<ListUsersDTO> listUsers() {
-        List<User> userEntity = userRepository.findAll();
-        return userEntity.stream().map(user -> new ListUsersDTO(user.getId(), user.getName(),
-                user.getEmail(), user.getType(), user.getActive(), user.getCreatedAt()));
-    }
-
-    public Optional<User> getUserById(Long id) {
-        Optional<User> userNotFound = userRepository.findById(id);
-
-        if (userNotFound.isEmpty()){
-            throw new UserNotFoundException("User not found");
-        }
-
-        return userNotFound;
-    }
 
     public ResponseUserDTO createUser(ResponseUserDTO responseUserDTO) {
         User userAlreadyExists = userRepository.findByEmail(responseUserDTO.email());
@@ -50,7 +35,6 @@ public class UserService {
         }
 
         String encoder = this.passwordEncoder.encode(responseUserDTO.password());
-
 
         User user = new User();
         user.setName(responseUserDTO.name());
@@ -62,22 +46,26 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
+        boolean userIdExists = userRepository.existsById(id);
 
-        if (user.isEmpty()) {
+        if (!userIdExists){
             throw new UserNotFoundException("User not found");
         }
-        User entity = new User();
-        entity.setId(user.get().getId());
-        userRepository.delete(entity);
 
+        userRepository.deleteById(id);
+    }
+
+    public GetUserByIdDTO getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        return new GetUserByIdDTO(user.getId(), user.getName(),
+                user.getEmail(), user.getType(), user.getActive(), user.getCreatedAt());
     }
 
     public void updateUser(Long id, UpdateUserDTO updateUserDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         String encoder = this.passwordEncoder.encode(updateUserDTO.password());
-
 
         user.setId(id);
         user.setName(updateUserDTO.name());
@@ -87,5 +75,10 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public Stream<ListUsersDTO> listUsers() {
+        List<User> userEntity = userRepository.findAll();
+        return userEntity.stream().map(user -> new ListUsersDTO(user.getId(), user.getName(),
+                user.getEmail(), user.getType(), user.getActive(), user.getCreatedAt()));
+    }
 
 }
