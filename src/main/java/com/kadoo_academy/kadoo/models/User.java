@@ -33,7 +33,7 @@ public class User {
     private String password;
 
     @Column(nullable = false, length = 50)
-    private UserEnum type = UserEnum.STUDENT;
+    private UserEnum type;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -49,6 +49,6 @@ public class User {
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Edict> edictList = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private ProfileStudent student;
 }

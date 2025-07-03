@@ -1,0 +1,6 @@
+package com.kadoo_academy.kadoo.dto.Request;
+
+import java.util.Date;
+
+public record UpdateEdictDto(String title,String category, String description,String linkDoc,Date startDate,Date endDate, Boolean active) {
+}

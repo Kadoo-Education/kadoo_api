@@ -24,6 +24,9 @@ public class Edict {
         @Column(name = "title",nullable = false)
         private String title;
 
+        @Column(name = "category", length = 50)
+        private String category;
+
         @Column(name = "description", nullable = false, length = 600)
         private String description;
 

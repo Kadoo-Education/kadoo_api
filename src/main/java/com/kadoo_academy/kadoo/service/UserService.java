@@ -1,9 +1,12 @@
 package com.kadoo_academy.kadoo.service;
 
-import com.kadoo_academy.kadoo.dto.*;
+import com.kadoo_academy.kadoo.dto.Request.CreateUserDTO;
+import com.kadoo_academy.kadoo.dto.Request.UpdateUserDTO;
+import com.kadoo_academy.kadoo.dto.Response.ListUsersDTO;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.UserExistsException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.UserNotFoundException;
 import com.kadoo_academy.kadoo.models.User;
+import com.kadoo_academy.kadoo.repositories.ProfileStudentRepository;
 import com.kadoo_academy.kadoo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,7 +45,7 @@ public class UserService {
         return userNotFound;
     }
 
-    public ResponseUserDTO createUser(ResponseUserDTO responseUserDTO) {
+    public CreateUserDTO createUser(CreateUserDTO responseUserDTO) {
         User userAlreadyExists = userRepository.findByEmail(responseUserDTO.email());
 
         if (userAlreadyExists != null) {

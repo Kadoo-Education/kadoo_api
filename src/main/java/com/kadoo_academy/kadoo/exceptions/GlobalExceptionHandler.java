@@ -34,4 +34,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Já existe uma inscrição para este usuário!");
     }
 
+    @ExceptionHandler(ProfileNotAuthorizedException.class)
+    private ResponseEntity<String> profileNotAuthorized(ProfileNotAuthorizedException exception){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.kadoo_academy.kadoo.dto;
+package com.kadoo_academy.kadoo.dto.Request;
 
 import lombok.Data;
 

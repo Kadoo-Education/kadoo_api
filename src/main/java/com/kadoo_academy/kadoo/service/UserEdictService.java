@@ -1,7 +1,7 @@
 package com.kadoo_academy.kadoo.service;
 
-import com.kadoo_academy.kadoo.dto.MultipleUserSubscriptionDTO;
-import com.kadoo_academy.kadoo.dto.UserEdictDTO;
+import com.kadoo_academy.kadoo.dto.Request.MultipleUserSubscriptionDTO;
+import com.kadoo_academy.kadoo.dto.Request.UserEdictDTO;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.UserEdictExistException;
 import com.kadoo_academy.kadoo.models.Edict;
 import com.kadoo_academy.kadoo.models.User;
