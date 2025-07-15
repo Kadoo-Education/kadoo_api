@@ -2,6 +2,7 @@ package com.kadoo_academy.kadoo.controller;
 
 import com.kadoo_academy.kadoo.dto.Request.CreateEdictDto;
 import com.kadoo_academy.kadoo.dto.Response.ResponseEdictDto;
+import com.kadoo_academy.kadoo.dto.Request.UpdateEdictActiveDto;
 import com.kadoo_academy.kadoo.dto.Request.UpdateEdictDto;
 import com.kadoo_academy.kadoo.service.EdictService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Stream;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/edict")
 public class EdictController {
@@ -44,6 +45,11 @@ public class EdictController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEdictById(@PathVariable ("id") Long id){
         edictService.deleteEdictById(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<UpdateEdictActiveDto> updateEdictActive(@PathVariable ("id") Long id, @RequestBody UpdateEdictActiveDto updateEdictActive){
+        edictService.EdictActive(id,updateEdictActive);
         return ResponseEntity.noContent().build();
     }
 }

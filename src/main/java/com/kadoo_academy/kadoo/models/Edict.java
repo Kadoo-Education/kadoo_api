@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
@@ -22,6 +23,9 @@ public class Edict {
 
         @Column(name = "title",nullable = false)
         private String title;
+
+        @Column(name = "category", length = 50)
+        private String category;
 
         @Column(name = "description", nullable = false, length = 600)
         private String description;
@@ -45,4 +49,11 @@ public class Edict {
 
         @Column(name = "start_date")
         private Date startDate;
+
+        @Column(name = "tags")
+        private ArrayList<String> tag = new ArrayList<>();
+
+        @ManyToOne
+        @JoinColumn(name = "idUserEdict")
+        private User user;
 }
