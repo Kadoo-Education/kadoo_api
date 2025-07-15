@@ -29,7 +29,7 @@ public class UserEdictService {
     private EdictRepository edictRepository;
 
     public UserEdictDTO subscribeUserEdict(UserEdictDTO dto) {
-        User user = userRepository.findById(dto.userSubscribe()).orElseThrow(() -> new IllegalArgumentException("User with ID " + dto.userSubscribe() + " was not found."));
+        User user = userRepository.findById(dto.userId()).orElseThrow(() -> new IllegalArgumentException("User with ID " + dto.userId() + " was not found."));
 
         if (!UserEnum.STUDENT.equals(user.getType())) {
             throw new ResponseStatusException(
@@ -38,7 +38,7 @@ public class UserEdictService {
             );
         }
 
-        Edict edict = edictRepository.findById(dto.edict()).orElseThrow(() -> new IllegalArgumentException("Edict with ID " + dto.edict() + " was not found."));
+        Edict edict = edictRepository.findById(dto.edictId()).orElseThrow(() -> new IllegalArgumentException("Edict with ID " + dto.edictId() + " was not found."));
 
         boolean alreadySubscribed = userEdictRepository.existsByUserSubscribeAndEdict(user, edict);
         if (alreadySubscribed) {
