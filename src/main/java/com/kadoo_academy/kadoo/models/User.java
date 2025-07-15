@@ -1,6 +1,5 @@
 package com.kadoo_academy.kadoo.models;
 
-import com.kadoo_academy.kadoo.models.enums.UserEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +34,9 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 60)
     private String password;
 
+    @Column(unique = true)
+    private String cpf;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
@@ -50,7 +52,7 @@ public class User implements UserDetails {
     private List<Edict> edictList = new ArrayList<>();
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    private ProfileStudent student;
+    private StudentProfile student;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private MentorProfile mentor;
