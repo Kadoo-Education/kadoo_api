@@ -35,9 +35,6 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 60)
     private String password;
 
-    @Column(nullable = false, length = 50)
-    private UserEnum type;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Date createdAt;

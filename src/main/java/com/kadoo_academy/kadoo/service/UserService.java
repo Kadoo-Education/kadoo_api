@@ -31,7 +31,7 @@ public class UserService {
     public Stream<ListUsersDTO> listUsers() {
         List<User> userEntity = userRepository.findAll();
         return userEntity.stream().map(user -> new ListUsersDTO(user.getId(), user.getName(),
-                user.getEmail(), user.getType(), user.getActive(), user.getCreatedAt()));
+                user.getEmail(), user.getActive(), user.getCreatedAt()));
     }
 
     public Optional<User> getUserById(Long id) {

@@ -31,12 +31,12 @@ public class UserEdictService {
     public UserEdictDTO subscribeUserEdict(UserEdictDTO dto) {
         User user = userRepository.findById(dto.userId()).orElseThrow(() -> new IllegalArgumentException("User with ID " + dto.userId() + " was not found."));
 
-        if (!UserEnum.STUDENT.equals(user.getType())) {
+       /* if (!UserEnum.STUDENT.equals(user.getType())) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "Only users of type 'STUDENT' are allowed to apply to edicts."
             );
-        }
+        }*/
 
         Edict edict = edictRepository.findById(dto.edictId()).orElseThrow(() -> new IllegalArgumentException("Edict with ID " + dto.edictId() + " was not found."));
 
@@ -80,7 +80,7 @@ public class UserEdictService {
         List<Long> alreadySubscribedUserIds = new ArrayList<>();
         List<Long> notStudentUserIds = new ArrayList<>();
 
-        for (User user : users) {
+        /*for (User user : users) {
             if (!UserEnum.STUDENT.equals(user.getType())) {
                 notStudentUserIds.add(user.getId());
                 continue;
@@ -97,7 +97,7 @@ public class UserEdictService {
             userEdict.setEdict(edict);
             userEdict.setNameSubscribe(user.getName());
             newSubscriptions.add(userEdict);
-        }
+        }*/
 
         userEdictRepository.saveAll(newSubscriptions);
 

@@ -1,5 +1,6 @@
 package com.kadoo_academy.kadoo.controller;
 
+import com.kadoo_academy.kadoo.dto.request.CreateUserDTO;
 import com.kadoo_academy.kadoo.dto.request.LoginRequest;
 import com.kadoo_academy.kadoo.dto.response.TokenResponseDTO;
 import com.kadoo_academy.kadoo.service.AuthenticationService;
@@ -27,6 +28,17 @@ public class AuthenticationController {
             return ResponseEntity.ok(token);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody CreateUserDTO createUserDTO) {
+        try {
+            authenticationService.register(createUserDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 }

@@ -24,10 +24,10 @@ public class EdictService {
 
     public CreateEdictDto createEdict(CreateEdictDto createEdictDto){
         User user = new User();
-        if(user.getType() != UserEnum.ADMIN &&
+        /*if(user.getType() != UserEnum.ADMIN &&
         user.getType() != UserEnum.ENTERPRISE){
             throw new ProfileNotAuthorizedException("Porfile is not authorized");
-        }
+        }*/
         Edict entity = new Edict();
         entity.setTitle(createEdictDto.title());
         entity.setCategory(createEdictDto.category());
