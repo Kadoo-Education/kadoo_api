@@ -6,7 +6,6 @@ import com.kadoo_academy.kadoo.dto.Response.ListUsersDTO;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.UserExistsException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.UserNotFoundException;
 import com.kadoo_academy.kadoo.models.User;
-import com.kadoo_academy.kadoo.repositories.ProfileStudentRepository;
 import com.kadoo_academy.kadoo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
