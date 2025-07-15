@@ -1,9 +1,9 @@
 package com.kadoo_academy.kadoo.service;
 
-import com.kadoo_academy.kadoo.dto.Request.CreateEdictDto;
-import com.kadoo_academy.kadoo.dto.Response.ResponseEdictDto;
-import com.kadoo_academy.kadoo.dto.Request.UpdateEdictActiveDto;
-import com.kadoo_academy.kadoo.dto.Request.UpdateEdictDto;
+import com.kadoo_academy.kadoo.dto.request.CreateEdictDto;
+import com.kadoo_academy.kadoo.dto.response.ResponseEdictDto;
+import com.kadoo_academy.kadoo.dto.request.UpdateEdictActiveDto;
+import com.kadoo_academy.kadoo.dto.request.UpdateEdictDto;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictExistsException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictNotFoundException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.ProfileNotAuthorizedException;

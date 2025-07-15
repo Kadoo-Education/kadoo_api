@@ -1,8 +1,8 @@
 package com.kadoo_academy.kadoo.service;
 
-import com.kadoo_academy.kadoo.dto.Request.CreateUserDTO;
-import com.kadoo_academy.kadoo.dto.Request.UpdateUserDTO;
-import com.kadoo_academy.kadoo.dto.Response.ListUsersDTO;
+import com.kadoo_academy.kadoo.dto.request.CreateUserDTO;
+import com.kadoo_academy.kadoo.dto.request.UpdateUserDTO;
+import com.kadoo_academy.kadoo.dto.response.ListUsersDTO;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.UserExistsException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.UserNotFoundException;
 import com.kadoo_academy.kadoo.models.User;
@@ -45,7 +45,7 @@ public class UserService {
     }
 
     public CreateUserDTO createUser(CreateUserDTO responseUserDTO) {
-        User userAlreadyExists = userRepository.findByEmail(responseUserDTO.email());
+        Optional<User> userAlreadyExists = userRepository.findByEmail(responseUserDTO.email());
 
         if (userAlreadyExists != null) {
             throw new UserExistsException();

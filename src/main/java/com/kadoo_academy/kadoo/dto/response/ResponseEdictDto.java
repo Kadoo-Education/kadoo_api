@@ -1,4 +1,4 @@
-package com.kadoo_academy.kadoo.dto.Response;
+package com.kadoo_academy.kadoo.dto.response;
 
 import java.util.ArrayList;
 import java.util.Date;

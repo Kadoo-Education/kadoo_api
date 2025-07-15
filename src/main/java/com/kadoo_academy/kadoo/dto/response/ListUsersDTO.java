@@ -1,4 +1,4 @@
-package com.kadoo_academy.kadoo.dto.Response;
+package com.kadoo_academy.kadoo.dto.response;
 
 import com.kadoo_academy.kadoo.models.enums.UserEnum;
 

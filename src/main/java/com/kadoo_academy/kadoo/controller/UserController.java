@@ -1,9 +1,9 @@
 package com.kadoo_academy.kadoo.controller;
 
 
-import com.kadoo_academy.kadoo.dto.Response.ListUsersDTO;
-import com.kadoo_academy.kadoo.dto.Request.CreateUserDTO;
-import com.kadoo_academy.kadoo.dto.Request.UpdateUserDTO;
+import com.kadoo_academy.kadoo.dto.response.ListUsersDTO;
+import com.kadoo_academy.kadoo.dto.request.CreateUserDTO;
+import com.kadoo_academy.kadoo.dto.request.UpdateUserDTO;
 import com.kadoo_academy.kadoo.models.User;
 import com.kadoo_academy.kadoo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
