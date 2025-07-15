@@ -10,18 +10,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "profile_student")
 public class ProfileStudent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private String birthDate;
+
     @Column(unique = true)
     private String cpf;
-    @Column(name = "type")
-    private UserEnum type = UserEnum.STUDENT;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "userId",unique = true)
     private User user;
-
 }

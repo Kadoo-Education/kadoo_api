@@ -55,6 +55,9 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private ProfileStudent student;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private MentorProfile mentor;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
