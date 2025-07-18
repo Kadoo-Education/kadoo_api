@@ -30,34 +30,31 @@ public class EdictService {
         }*/
         Edict entity = new Edict();
         entity.setTitle(createEdictDto.title());
-        entity.setCategory(createEdictDto.category());
         entity.setDescription(createEdictDto.description());
         entity.setLinkDoc(createEdictDto.linkDoc());
         entity.setEndDate(createEdictDto.endDate());
         entity.setStartDate(createEdictDto.startDate());
-        entity.setTag(createEdictDto.tag());
+        entity.setTags(createEdictDto.tags());
         edictRepository.save(entity);
         return createEdictDto;
     }
     public Stream<ResponseEdictDto> edictList(){
         List<Edict> entity = edictRepository.findAll();
         return entity.stream().map(edict -> new ResponseEdictDto(
-                edict.getId(),edict.getTitle(), edict.getCategory(),
-                edict.getDescription(),edict.getLinkDoc(),edict.getStartDate(),
-                edict.getEndDate(),edict.isActive(),edict.getTag()));
+                edict.getId(),edict.getTitle(),edict.getDescription(),edict.getLinkDoc(),edict.getStartDate(),
+                edict.getEndDate(),edict.isActive(),edict.getTags()));
     }
     public ResponseEdictDto getEdictById(Long id){
         Edict edict = edictRepository.findById(id).orElseThrow(() -> new EdictExistsException("Edict doesn't exist"));
         return new ResponseEdictDto(
-                edict.getId(),edict.getTitle(), edict.getCategory(),edict.getDescription(),
+                edict.getId(),edict.getTitle(),edict.getDescription(),
                 edict.getLinkDoc(), edict.getStartDate(),
-                edict.getEndDate(),edict.isActive(),edict.getTag());
+                edict.getEndDate(),edict.isActive(),edict.getTags());
     }
 
     public void updateEdictById(Long id, UpdateEdictDto updateEdictDto){
         Edict edictEntity = edictRepository.findById(id).orElseThrow(() -> new EdictNotFoundException("Edict not found"));
                 edictEntity.setTitle(updateEdictDto.title());
-                edictEntity.setCategory(updateEdictDto.category());
                 edictEntity.setDescription(updateEdictDto.description());
                 edictEntity.setLinkDoc(updateEdictDto.linkDoc());
                 edictEntity.setStartDate(updateEdictDto.startDate());

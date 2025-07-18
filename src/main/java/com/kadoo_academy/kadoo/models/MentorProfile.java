@@ -25,9 +25,6 @@ public class MentorProfile {
     @Column(nullable = false)
     private List<String> area = new ArrayList<>();
 
-    @Column(nullable = false)
-    private String linkedin;
-
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "userId", unique = true)
     private User user;

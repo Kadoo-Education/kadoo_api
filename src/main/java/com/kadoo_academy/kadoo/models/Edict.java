@@ -24,22 +24,11 @@ public class Edict {
         @Column(name = "title",nullable = false)
         private String title;
 
-        @Column(name = "category", length = 50)
-        private String category;
-
         @Column(name = "description", nullable = false, length = 600)
         private String description;
 
         @Column(name = "link",nullable = false)
         private String linkDoc;
-
-        @CreationTimestamp
-        @Column(name = "created_at")
-        private Date createdAt;
-
-        @UpdateTimestamp
-        @Column(name = "update_at")
-        private Date updateAt;
 
         @Column(name = "active")
         private boolean active = true;
@@ -51,7 +40,15 @@ public class Edict {
         private Date startDate;
 
         @Column(name = "tags")
-        private ArrayList<String> tag = new ArrayList<>();
+        private ArrayList<String> tags = new ArrayList<>();
+
+        @CreationTimestamp
+        @Column(name = "created_at")
+        private Date createdAt;
+
+        @UpdateTimestamp
+        @Column(name = "update_at")
+        private Date updateAt;
 
         @ManyToOne
         @JoinColumn(name = "idUserEdict")
