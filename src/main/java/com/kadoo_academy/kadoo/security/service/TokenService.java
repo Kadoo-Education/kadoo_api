@@ -76,6 +76,7 @@ public class TokenService {
         if (user.getAdmin() != null) return "ROLE_ADMIN";
         if (user.getMentor() != null) return "ROLE_MENTOR";
         if (user.getStudent() != null) return "ROLE_STUDENT";
+        if (user.getEnterprise() != null) return "ROLE_ENTERPRISE";
         return "ROLE_UNKNOWN";
     }
 }

@@ -21,21 +21,27 @@ public class EdictController {
     private EdictService edictService;
 
     @PostMapping
-    public ResponseEntity<CreateEdictDto> createEdict(@RequestBody CreateEdictDto createEdictDto){
-         edictService.createEdict(createEdictDto);
+    public ResponseEntity<CreateEdictDto> createEdict(
+            @RequestBody CreateEdictDto createEdictDto,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        edictService.createEdict(createEdictDto, token);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     @GetMapping
-    public ResponseEntity<Stream<ResponseEdictDto>> responseEntity(){
-      Stream<ResponseEdictDto> edictList = edictService.edictList();
-     return ResponseEntity.ok().body(edictList);
+    public ResponseEntity<Stream<ResponseEdictDto>> getAll(@RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Stream<ResponseEdictDto> edictList = edictService.edictList(token);
+        return ResponseEntity.ok().body(edictList);
     }
 
-    @GetMapping("/{id}")
+    /* @GetMapping("/{id}")
     public ResponseEntity<ResponseEdictDto> getEdictById(@PathVariable ("id") Long id) {
         ResponseEdictDto edictDto = edictService.getEdictById(id);
             return ResponseEntity.ok().body(edictDto);
-    }
+    } */
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateEdictById(@PathVariable("id") Long id, @RequestBody UpdateEdictDto updateEdictDto){

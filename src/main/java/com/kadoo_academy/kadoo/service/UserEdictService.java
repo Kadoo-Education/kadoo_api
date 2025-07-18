@@ -2,6 +2,7 @@ package com.kadoo_academy.kadoo.service;
 
 import com.kadoo_academy.kadoo.dto.request.MultipleUserSubscriptionDTO;
 import com.kadoo_academy.kadoo.dto.request.UserEdictDTO;
+import com.kadoo_academy.kadoo.dto.response.ProfileUserResponseDTO;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.UserEdictExistException;
 import com.kadoo_academy.kadoo.models.Edict;
 import com.kadoo_academy.kadoo.models.User;
@@ -10,6 +11,7 @@ import com.kadoo_academy.kadoo.models.enums.UserEnum;
 import com.kadoo_academy.kadoo.repositories.EdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserEdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserRepository;
+import com.kadoo_academy.kadoo.security.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,9 +29,20 @@ public class UserEdictService {
     private UserRepository userRepository;
     @Autowired
     private EdictRepository edictRepository;
+    @Autowired
+    private TokenService tokenService;
 
-    public UserEdictDTO subscribeUserEdict(UserEdictDTO dto) {
-        User user = userRepository.findById(dto.userId()).orElseThrow(() -> new IllegalArgumentException("User with ID " + dto.userId() + " was not found."));
+    public UserEdictDTO subscribeUserEdict(UserEdictDTO dto, String token) {
+
+        ProfileUserResponseDTO profile = tokenService.decodeToken(token);
+
+        Long userId = profile.id();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + userId + " was not found."));
+
+        Edict edict = edictRepository.findById(dto.edictId())
+                .orElseThrow(() -> new IllegalArgumentException("Edict with ID " + dto.edictId() + " was not found."));
 
        /* if (!UserEnum.STUDENT.equals(user.getType())) {
             throw new ResponseStatusException(
@@ -37,8 +50,6 @@ public class UserEdictService {
                     "Only users of type 'STUDENT' are allowed to apply to edicts."
             );
         }*/
-
-        Edict edict = edictRepository.findById(dto.edictId()).orElseThrow(() -> new IllegalArgumentException("Edict with ID " + dto.edictId() + " was not found."));
 
         boolean alreadySubscribed = userEdictRepository.existsByUserSubscribeAndEdict(user, edict);
         if (alreadySubscribed) {
@@ -49,6 +60,7 @@ public class UserEdictService {
         userEdict.setUserSubscribe(user);
         userEdict.setEdict(edict);
         userEdict.setNameSubscribe(user.getName());
+
         userEdictRepository.save(userEdict);
         return dto;
     }

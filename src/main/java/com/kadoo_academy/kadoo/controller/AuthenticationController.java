@@ -22,9 +22,9 @@ public class AuthenticationController {
         try {
             TokenResponseDTO token = authenticationService.login(login);
 
-            return ResponseEntity.ok(token);
+            return ResponseEntity.status(HttpStatus.OK).body(token);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

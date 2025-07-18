@@ -18,8 +18,12 @@ public class UserEdictController {
     private UserEdictService userEdictService;
 
     @PostMapping()
-    public ResponseEntity<UserEdictDTO> subscribeUserEdict (@RequestBody UserEdictDTO dto) {
-        userEdictService.subscribeUserEdict(dto);
+    public ResponseEntity<UserEdictDTO> subscribeUserEdict (
+            @RequestBody UserEdictDTO dto,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        userEdictService.subscribeUserEdict(dto, token);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

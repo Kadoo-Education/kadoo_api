@@ -60,6 +60,9 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private AdminProfile admin;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private EnterpriseProfile enterprise;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (admin != null) {
@@ -70,6 +73,9 @@ public class User implements UserDetails {
         }
         if (student != null) {
             return List.of(() -> "ROLE_STUDENT");
+        }
+        if (enterprise != null) {
+            return List.of(() -> "ROLE_ENTERPRISE");
         }
         return List.of(() -> "ROLE_UNKNOWN");
     }
