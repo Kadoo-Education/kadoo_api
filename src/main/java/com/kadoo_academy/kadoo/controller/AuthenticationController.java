@@ -19,12 +19,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> login(@RequestBody LoginRequest login) {
-        try {
-            TokenResponseDTO token = authenticationService.login(login);
-
-            return ResponseEntity.status(HttpStatus.OK).body(token);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        TokenResponseDTO token = authenticationService.login(login);
+        return ResponseEntity.ok(token);
     }
 }

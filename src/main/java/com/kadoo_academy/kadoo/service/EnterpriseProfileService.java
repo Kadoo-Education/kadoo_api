@@ -17,6 +17,7 @@ public class EnterpriseProfileService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 

@@ -20,7 +20,6 @@ public class MentorProfileController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody CreateMentorProfileDTO mentor) {
         try {
-            System.out.println(mentor);
             mentorProfileService.create(mentor);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e){
