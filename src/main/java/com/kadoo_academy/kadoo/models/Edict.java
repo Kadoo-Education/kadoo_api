@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "edict")
@@ -24,33 +26,46 @@ public class Edict {
         @Column(name = "title",nullable = false)
         private String title;
 
-        @Column(name = "description", nullable = false, length = 600)
+        @Column(name = "description", nullable = false, length = 2000)
         private String description;
 
-        @Column(name = "link",nullable = false)
-        private String linkDoc;
+        @Column(name = "organizer", nullable = false)
+        private String organizer;
 
-        @Column(name = "active")
-        private boolean active = true;
-
-        @Column(name = "end_date")
-        private Date endDate;
+        @Column(name = "contact", nullable = false)
+        private String contact;
 
         @Column(name = "start_date")
-        private Date startDate;
+        private LocalDateTime startDate;
 
-        @Column(name = "tags")
-        private ArrayList<String> tags = new ArrayList<>();
+        @Column(name = "end_date")
+        private LocalDateTime endDate;
+
+        @Column(name = "pdf",nullable = false)
+        private String pdf;
+
+        @Column(name = "categories")
+        private ArrayList<String> categories = new ArrayList<>();
+
+        @Column(name = "status", nullable = false)
+        private String status = "Ativo";
+
+        @Column(name = "location", nullable = false)
+        private String location;
 
         @CreationTimestamp
-        @Column(name = "created_at")
-        private Date createdAt;
+        @Column(name = "created_at", nullable = false, updatable = false)
+        private LocalDateTime createdAt;
 
         @UpdateTimestamp
         @Column(name = "update_at")
-        private Date updateAt;
+        private LocalDateTime updateAt;
+
+        @OneToMany(mappedBy = "edict", cascade = CascadeType.ALL, orphanRemoval = true)
+        @OrderBy("date ASC")
+        private List<Step> steps = new ArrayList<>();
 
         @ManyToOne
-        @JoinColumn(name = "idUserEdict")
+        @JoinColumn(name = "userId")
         private User user;
 }

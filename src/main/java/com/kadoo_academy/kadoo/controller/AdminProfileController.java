@@ -1,7 +1,6 @@
 package com.kadoo_academy.kadoo.controller;
 
 import com.kadoo_academy.kadoo.dto.request.CreateAdminProfileDTO;
-import com.kadoo_academy.kadoo.models.AdminProfile;
 import com.kadoo_academy.kadoo.service.AdminProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

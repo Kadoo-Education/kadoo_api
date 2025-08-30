@@ -1,15 +1,14 @@
 package com.kadoo_academy.kadoo.service;
 
-import com.kadoo_academy.kadoo.dto.request.CreateEdictDto;
+import com.kadoo_academy.kadoo.dto.request.CreateEdictDTO;
+import com.kadoo_academy.kadoo.dto.response.EdictDTO;
 import com.kadoo_academy.kadoo.dto.response.ProfileUserResponseDTO;
-import com.kadoo_academy.kadoo.dto.response.ResponseEdictDto;
 import com.kadoo_academy.kadoo.dto.request.UpdateEdictActiveDto;
 import com.kadoo_academy.kadoo.dto.request.UpdateEdictDto;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictExistsException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictNotFoundException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.ProfileNotAuthorizedException;
-import com.kadoo_academy.kadoo.models.Edict;
-import com.kadoo_academy.kadoo.models.User;
+import com.kadoo_academy.kadoo.models.*;
 import com.kadoo_academy.kadoo.models.enums.UserEnum;
 import com.kadoo_academy.kadoo.repositories.EdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserEdictRepository;
@@ -37,55 +36,82 @@ public class EdictService {
     @Autowired
     private TokenService tokenService;
 
-    public CreateEdictDto createEdict(CreateEdictDto createEdictDto, String token){
-
+    public void create(CreateEdictDTO createEdictDTO, String token){
         ProfileUserResponseDTO profile = tokenService.decodeToken(token);
 
         User user = new User();
         user.setId(profile.id());
-        /*if(user.getType() != UserEnum.ADMIN &&
-        user.getType() != UserEnum.ENTERPRISE){
-            throw new ProfileNotAuthorizedException("Porfile is not authorized");
-        }*/
+
         Edict entity = new Edict();
-        entity.setTitle(createEdictDto.title());
-        entity.setDescription(createEdictDto.description());
-        entity.setLinkDoc(createEdictDto.linkDoc());
-        entity.setEndDate(createEdictDto.endDate());
-        entity.setStartDate(createEdictDto.startDate());
-        entity.setTags(createEdictDto.tags());
+        entity.setTitle(createEdictDTO.title());
+        entity.setDescription(createEdictDTO.description());
+        entity.setOrganizer(createEdictDTO.organizer());
+        entity.setStatus("Ativo");
+        entity.setEndDate(createEdictDTO.endDate());
+        entity.setStartDate(createEdictDTO.startDate());
+        entity.setPdf(createEdictDTO.file());
+        entity.setContact(createEdictDTO.contact());
+        entity.setCategories(createEdictDTO.categories());
+        entity.setLocation(createEdictDTO.location());
         entity.setUser(user);
 
+        List<Step> steps = createEdictDTO.steps().stream()
+                .map(stepDTO -> {
+                    Step step = new Step();
+                    step.setTitle(stepDTO.title());
+                    step.setDescription(stepDTO.description());
+                    step.setTime(stepDTO.time());
+                    step.setDate(stepDTO.date());
+                    step.setEdict(entity);
 
+                    if (stepDTO.type() == "Evento") {
+                        Event event = new Event();
+                        event.setStep(step);
+
+                        if(stepDTO.format() == "Presencial") {
+                            InPersonEvent inPersonEvent = new InPersonEvent();
+                            inPersonEvent.setAddress(stepDTO.adress());
+                            inPersonEvent.setEvent(event);
+                        }
+
+                        if(stepDTO.format() == "Online") {
+                            OnlineEvent onlineEvent = new OnlineEvent();
+                            onlineEvent.setMeetingLink(stepDTO.meetinglink());
+                            onlineEvent.setEvent(event);
+                        }
+                    }
+
+                    else if (stepDTO.type() == "Atividade") {
+                        ActivityStep activityStep = new ActivityStep();
+                        activityStep.setTitle(stepDTO.activityTitle());
+                        activityStep.setDueDate(stepDTO.dueDate());
+                        activityStep.setStep(step);
+                    }
+                    return step;
+                })
+                .toList();
+
+
+        entity.setSteps(steps);
         edictRepository.save(entity);
-        return createEdictDto;
     }
-    public Stream<ResponseEdictDto> edictList(String token){
-        ProfileUserResponseDTO userData = tokenService.decodeToken(token);
-        Long userId = userData.id();
+    public List<EdictDTO> getAll(){
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        List<Edict> edicts = edictRepository.findAll();
 
-        // Lista de inscrições do usuário
-        Set<Long> subscribedEdictIds = userEdictRepository.findByUserSubscribe(user).stream()
-                .map(ue -> ue.getEdict().getId())
-                .collect(Collectors.toSet());
-
-        // Mapeando todos os editais com info de inscrição
-        return edictRepository.findAll().stream().map(edict ->
-                new ResponseEdictDto(
-                        edict.getId(),
-                        edict.getTitle(),
-                        edict.getDescription(),
-                        edict.getLinkDoc(),
-                        edict.getStartDate(),
-                        edict.getEndDate(),
-                        edict.isActive(),
-                        edict.getTags(),
-                        subscribedEdictIds.contains(edict.getId()) // aqui está o segredo
-                )
-        );
+        return edicts.stream()
+                .map(e -> new EdictDTO(
+                        e.getId(),
+                        e.getTitle(),
+                        e.getDescription(),
+                        e.getStartDate(),
+                        e.getEndDate(),
+                        e.getOrganizer(),
+                        e.getPdf(),
+                        e.getStatus(),
+                        e.getCategories()
+                ))
+                .toList();
     }
     /* public ResponseEdictDto getEdictById(Long id){
         Edict edict = edictRepository.findById(id).orElseThrow(() -> new EdictExistsException("Edict doesn't exist"));
@@ -96,15 +122,15 @@ public class EdictService {
     }*/
 
     public void updateEdictById(Long id, UpdateEdictDto updateEdictDto){
-        Edict edictEntity = edictRepository.findById(id).orElseThrow(() -> new EdictNotFoundException("Edict not found"));
-                edictEntity.setTitle(updateEdictDto.title());
-                edictEntity.setDescription(updateEdictDto.description());
-                edictEntity.setLinkDoc(updateEdictDto.linkDoc());
-                edictEntity.setStartDate(updateEdictDto.startDate());
-                edictEntity.setEndDate(updateEdictDto.endDate());
-                edictEntity.setActive(updateEdictDto.active());
+//        Edict edictEntity = edictRepository.findById(id).orElseThrow(() -> new EdictNotFoundException("Edict not found"));
+//                edictEntity.setTitle(updateEdictDto.title());
+//                edictEntity.setDescription(updateEdictDto.description());
+//                edictEntity.setLinkDoc(updateEdictDto.linkDoc());
+//                edictEntity.setStartDate(updateEdictDto.startDate());
+//                edictEntity.setEndDate(updateEdictDto.endDate());
+//                edictEntity.setActive(updateEdictDto.active());
 
-            edictRepository.save(edictEntity);
+//            edictRepository.save(edictEntity);
         }
 
     public void deleteEdictById(Long id){
@@ -116,7 +142,7 @@ public class EdictService {
     }
     public void EdictActive(Long id, UpdateEdictActiveDto updateEdict){
      Edict edict = edictRepository.findById(id).orElseThrow(()-> new EdictExistsException("Edict not found"));
-     edict.setActive(updateEdict.getActive());
+//     edict.setActive(updateEdict.getActive());
      edictRepository.save(edict);
     }
 }
