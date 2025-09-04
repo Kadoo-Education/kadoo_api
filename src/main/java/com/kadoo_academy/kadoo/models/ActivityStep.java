@@ -17,17 +17,11 @@ import java.time.LocalDateTime;
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Column(nullable = false)
-        private String title;
-
-        @Column(name = "description")
-        private String description;
-
         @Column(name = "due_date", nullable = false)
         private LocalDateTime dueDate;
 
         @Column(name = "pdf", nullable = false)
-        private String pdf;
+        private String file;
 
         @OneToOne
         @JoinColumn(name = "step_id", nullable = false, unique = true)

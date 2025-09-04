@@ -48,7 +48,7 @@ public class Edict {
         private ArrayList<String> categories = new ArrayList<>();
 
         @Column(name = "status", nullable = false)
-        private String status = "Ativo";
+        private String status;
 
         @Column(name = "location", nullable = false)
         private String location;
@@ -62,7 +62,6 @@ public class Edict {
         private LocalDateTime updateAt;
 
         @OneToMany(mappedBy = "edict", cascade = CascadeType.ALL, orphanRemoval = true)
-        @OrderBy("date ASC")
         private List<Step> steps = new ArrayList<>();
 
         @ManyToOne

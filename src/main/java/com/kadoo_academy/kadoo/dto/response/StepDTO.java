@@ -1,18 +1,18 @@
-package com.kadoo_academy.kadoo.dto.request;
+package com.kadoo_academy.kadoo.dto.response;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public record CreateStepsDTO(
+public record StepDTO(
+        Long id,
         String title,
         String description,
         String time,
         LocalDate date,
         String format,
         String mode,
-        String address,
         String meetingLink,
-        LocalDateTime dueDate,
-        String file
+        String address,
+        LocalDate dueDate,
+        String activityFile
 ) {
 }

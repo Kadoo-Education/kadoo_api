@@ -2,10 +2,9 @@ package com.kadoo_academy.kadoo.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public record EdictDTO(
+public record EdictDetailsDTO(
         Long id,
         String title,
         String description,
@@ -16,6 +15,7 @@ public record EdictDTO(
         String file,
         String status,
         String location,
-        ArrayList<String> categories
+        ArrayList<String> categories,
+        List<StepDTO> steps
 ) {
 }

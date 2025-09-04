@@ -2,9 +2,11 @@ package com.kadoo_academy.kadoo.service;
 
 import com.kadoo_academy.kadoo.dto.request.CreateEdictDTO;
 import com.kadoo_academy.kadoo.dto.response.EdictDTO;
+import com.kadoo_academy.kadoo.dto.response.EdictDetailsDTO;
 import com.kadoo_academy.kadoo.dto.response.ProfileUserResponseDTO;
 import com.kadoo_academy.kadoo.dto.request.UpdateEdictActiveDto;
 import com.kadoo_academy.kadoo.dto.request.UpdateEdictDto;
+import com.kadoo_academy.kadoo.dto.response.StepDTO;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictExistsException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictNotFoundException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.ProfileNotAuthorizedException;
@@ -15,11 +17,12 @@ import com.kadoo_academy.kadoo.repositories.UserEdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserRepository;
 import com.kadoo_academy.kadoo.security.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Service
@@ -46,7 +49,7 @@ public class EdictService {
         entity.setTitle(createEdictDTO.title());
         entity.setDescription(createEdictDTO.description());
         entity.setOrganizer(createEdictDTO.organizer());
-        entity.setStatus("Ativo");
+        entity.setStatus("Aberto");
         entity.setEndDate(createEdictDTO.endDate());
         entity.setStartDate(createEdictDTO.startDate());
         entity.setPdf(createEdictDTO.file());
@@ -64,27 +67,29 @@ public class EdictService {
                     step.setDate(stepDTO.date());
                     step.setEdict(entity);
 
-                    if (stepDTO.type() == "Evento") {
+                    if ("Evento".equals(stepDTO.format())) {
                         Event event = new Event();
-                        event.setStep(step);
 
-                        if(stepDTO.format() == "Presencial") {
+                        if("Presencial".equals(stepDTO.mode())) {
                             InPersonEvent inPersonEvent = new InPersonEvent();
-                            inPersonEvent.setAddress(stepDTO.adress());
+                            inPersonEvent.setAddress(stepDTO.address());
                             inPersonEvent.setEvent(event);
-                        }
-
-                        if(stepDTO.format() == "Online") {
+                            event.setInPerson(inPersonEvent);
+                        } else if("Online".equals(stepDTO.mode())) {
                             OnlineEvent onlineEvent = new OnlineEvent();
-                            onlineEvent.setMeetingLink(stepDTO.meetinglink());
+                            onlineEvent.setMeetingLink(stepDTO.meetingLink());
                             onlineEvent.setEvent(event);
+                            event.setOnlineEvent(onlineEvent);
                         }
+                        event.setStep(step);
+                        step.setEvent(event);
                     }
 
-                    else if (stepDTO.type() == "Atividade") {
+                    else if ("Atividade".equals(stepDTO.format())) {
                         ActivityStep activityStep = new ActivityStep();
-                        activityStep.setTitle(stepDTO.activityTitle());
                         activityStep.setDueDate(stepDTO.dueDate());
+                        activityStep.setFile(stepDTO.file());
+                        step.setActivity(activityStep);
                         activityStep.setStep(step);
                     }
                     return step;
@@ -95,6 +100,7 @@ public class EdictService {
         entity.setSteps(steps);
         edictRepository.save(entity);
     }
+
     public List<EdictDTO> getAll(){
 
         List<Edict> edicts = edictRepository.findAll();
@@ -107,11 +113,82 @@ public class EdictService {
                         e.getStartDate(),
                         e.getEndDate(),
                         e.getOrganizer(),
+                        e.getContact(),
                         e.getPdf(),
                         e.getStatus(),
+                        e.getLocation(),
                         e.getCategories()
                 ))
                 .toList();
+    }
+
+
+    public EdictDetailsDTO getById(Long id){
+        Edict edict = edictRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Edital não encontrado."));
+
+        return new EdictDetailsDTO(
+                edict.getId(),
+                edict.getTitle(),
+                edict.getDescription(),
+                edict.getStartDate(),
+                edict.getEndDate(),
+                edict.getOrganizer(),
+                edict.getContact(),
+                edict.getPdf(),
+                edict.getStatus(),
+                edict.getLocation(),
+                edict.getCategories(),
+                edict.getSteps().stream()
+                        .map(s -> {
+
+                            String format = null;
+                            if (s.getEvent() != null) {
+                                format = "Evento";
+                            } else if (s.getActivity() != null) {
+                                format = "Atividade";
+                            }
+
+
+                            String mode = null;
+                            String address = null;
+                            String meetingLink = null;
+                            if (s.getEvent() != null) {
+                                if (s.getEvent().getInPerson() != null) {
+                                    mode = "Presencial";
+                                    address = s.getEvent().getInPerson().getAddress();
+                                } else if (s.getEvent().getOnlineEvent() != null) {
+                                    mode = "Online";
+                                    meetingLink = s.getEvent().getOnlineEvent().getMeetingLink();
+                                }
+                            }
+
+                            LocalDate dueDate = null;
+                            String activityFile = null;
+                            if (s.getActivity() != null) {
+                                if (s.getActivity().getDueDate() != null) {
+                                    dueDate = s.getActivity().getDueDate().toLocalDate();
+                                }
+                                activityFile = s.getActivity().getFile();
+                            }
+
+                            return new StepDTO(
+                                    s.getId(),
+                                    s.getTitle(),
+                                    s.getDescription(),
+                                    s.getTime(),
+                                    s.getDate(),
+                                    format,
+                                    mode,
+                                    meetingLink,
+                                    address,
+                                    dueDate,
+                                    activityFile
+                            );
+                        })
+                        .toList()
+        );
     }
     /* public ResponseEdictDto getEdictById(Long id){
         Edict edict = edictRepository.findById(id).orElseThrow(() -> new EdictExistsException("Edict doesn't exist"));
