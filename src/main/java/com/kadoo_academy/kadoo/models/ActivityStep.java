@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
         private Long id;
 
         @Column(name = "due_date", nullable = false)
-        private LocalDateTime dueDate;
+        private LocalDate dueDate;
 
         @Column(name = "pdf", nullable = false)
         private String file;

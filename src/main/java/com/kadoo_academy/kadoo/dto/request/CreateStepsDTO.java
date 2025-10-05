@@ -6,13 +6,12 @@ import java.time.LocalDateTime;
 public record CreateStepsDTO(
         String title,
         String description,
-        String time,
         LocalDate date,
         String format,
         String mode,
         String address,
         String meetingLink,
-        LocalDateTime dueDate,
-        String file
+        LocalDate dueDate,
+        String activityFile
 ) {
 }

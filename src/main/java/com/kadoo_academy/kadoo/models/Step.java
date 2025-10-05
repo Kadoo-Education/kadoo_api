@@ -27,13 +27,10 @@ public class Step {
     @Column(name = "date")
     private LocalDate date;
 
-    @Column(name = "time")
-    private String time;
-
     @Column(name = "status")
     private String status = "Ativo";
 
-    @OneToOne(mappedBy = "step", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true)
     private Event event;
 
     @OneToOne(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true)

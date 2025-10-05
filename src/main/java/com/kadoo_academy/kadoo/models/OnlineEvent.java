@@ -16,6 +16,12 @@ public class OnlineEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "mode")
+    private String mode;
+
+    @Column(name = "format")
+    private String format;
+
     @Column(name = "meeting_link")
     private String meetingLink;
 

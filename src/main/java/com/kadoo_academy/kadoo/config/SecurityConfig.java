@@ -32,6 +32,7 @@ public class SecurityConfig {
                                 .requestMatchers("/mentor-profile").permitAll()
                                 .requestMatchers("/admin-profile").permitAll()
                                 .requestMatchers("/enterprise-profile").permitAll()
+                                .requestMatchers("/steps").permitAll()
                                 .anyRequest().authenticated())
                 .cors(cors -> cors
                         .configurationSource(request -> {

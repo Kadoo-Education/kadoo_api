@@ -19,6 +19,12 @@ public class InPersonEvent {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "mode")
+    private String mode;
+
+    @Column(name = "format")
+    private String format;
+
     @OneToOne
     @JoinColumn(name = "event_id", nullable = false, unique = true)
     private Event event;

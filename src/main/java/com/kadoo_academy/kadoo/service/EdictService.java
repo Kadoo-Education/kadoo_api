@@ -5,17 +5,16 @@ import com.kadoo_academy.kadoo.dto.response.EdictDTO;
 import com.kadoo_academy.kadoo.dto.response.EdictDetailsDTO;
 import com.kadoo_academy.kadoo.dto.response.ProfileUserResponseDTO;
 import com.kadoo_academy.kadoo.dto.request.UpdateEdictActiveDto;
-import com.kadoo_academy.kadoo.dto.request.UpdateEdictDto;
+import com.kadoo_academy.kadoo.dto.request.UpdateEdictDTO;
 import com.kadoo_academy.kadoo.dto.response.StepDTO;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictExistsException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictNotFoundException;
-import com.kadoo_academy.kadoo.exceptions.customExceptions.ProfileNotAuthorizedException;
 import com.kadoo_academy.kadoo.models.*;
-import com.kadoo_academy.kadoo.models.enums.UserEnum;
 import com.kadoo_academy.kadoo.repositories.EdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserEdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserRepository;
 import com.kadoo_academy.kadoo.security.service.TokenService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -63,7 +62,7 @@ public class EdictService {
                     Step step = new Step();
                     step.setTitle(stepDTO.title());
                     step.setDescription(stepDTO.description());
-                    step.setTime(stepDTO.time());
+
                     step.setDate(stepDTO.date());
                     step.setEdict(entity);
 
@@ -73,11 +72,15 @@ public class EdictService {
                         if("Presencial".equals(stepDTO.mode())) {
                             InPersonEvent inPersonEvent = new InPersonEvent();
                             inPersonEvent.setAddress(stepDTO.address());
+                            inPersonEvent.setMode(stepDTO.mode());
+                            inPersonEvent.setFormat(stepDTO.format());
                             inPersonEvent.setEvent(event);
                             event.setInPerson(inPersonEvent);
                         } else if("Online".equals(stepDTO.mode())) {
                             OnlineEvent onlineEvent = new OnlineEvent();
                             onlineEvent.setMeetingLink(stepDTO.meetingLink());
+                            onlineEvent.setMode(stepDTO.mode());
+                            onlineEvent.setFormat(stepDTO.format());
                             onlineEvent.setEvent(event);
                             event.setOnlineEvent(onlineEvent);
                         }
@@ -88,7 +91,7 @@ public class EdictService {
                     else if ("Atividade".equals(stepDTO.format())) {
                         ActivityStep activityStep = new ActivityStep();
                         activityStep.setDueDate(stepDTO.dueDate());
-                        activityStep.setFile(stepDTO.file());
+                        activityStep.setFile(stepDTO.activityFile());
                         step.setActivity(activityStep);
                         activityStep.setStep(step);
                     }
@@ -168,7 +171,7 @@ public class EdictService {
                             String activityFile = null;
                             if (s.getActivity() != null) {
                                 if (s.getActivity().getDueDate() != null) {
-                                    dueDate = s.getActivity().getDueDate().toLocalDate();
+                                    dueDate = s.getActivity().getDueDate();
                                 }
                                 activityFile = s.getActivity().getFile();
                             }
@@ -177,7 +180,6 @@ public class EdictService {
                                     s.getId(),
                                     s.getTitle(),
                                     s.getDescription(),
-                                    s.getTime(),
                                     s.getDate(),
                                     format,
                                     mode,
@@ -190,37 +192,71 @@ public class EdictService {
                         .toList()
         );
     }
-    /* public ResponseEdictDto getEdictById(Long id){
-        Edict edict = edictRepository.findById(id).orElseThrow(() -> new EdictExistsException("Edict doesn't exist"));
-        return new ResponseEdictDto(
-                edict.getId(),edict.getTitle(),edict.getDescription(),
-                edict.getLinkDoc(), edict.getStartDate(),
-                edict.getEndDate(),edict.isActive(),edict.getTags());
-    }*/
 
-    public void updateEdictById(Long id, UpdateEdictDto updateEdictDto){
-//        Edict edictEntity = edictRepository.findById(id).orElseThrow(() -> new EdictNotFoundException("Edict not found"));
-//                edictEntity.setTitle(updateEdictDto.title());
-//                edictEntity.setDescription(updateEdictDto.description());
-//                edictEntity.setLinkDoc(updateEdictDto.linkDoc());
-//                edictEntity.setStartDate(updateEdictDto.startDate());
-//                edictEntity.setEndDate(updateEdictDto.endDate());
-//                edictEntity.setActive(updateEdictDto.active());
+    @Transactional
+    public void update(Long id, UpdateEdictDTO dto) {
 
-//            edictRepository.save(edictEntity);
-        }
+        Edict edict = edictRepository.findById(id).orElseThrow(() -> new EdictNotFoundException("Edict not found"));
+        edict.setTitle(dto.title());
+        edict.setDescription(dto.description());
+        edict.setOrganizer(dto.organizer());
+        edict.setContact(dto.contact());
+        edict.setLocation(dto.location());
+        edict.setStartDate(dto.startDate());
+        edict.setEndDate(dto.endDate());
+        edict.setPdf(dto.file());
+        edict.getCategories().clear();
+        edict.getCategories().addAll(dto.categories());
 
-    public void deleteEdictById(Long id){
-        boolean idExists = edictRepository.existsById(id);
-        if (!idExists){
-            throw new EdictExistsException("Edict doesn't exist");
+
+        edict.getSteps().clear();
+        dto.steps().forEach(s -> {
+            Step st = new Step();
+            st.setTitle(s.title());
+            st.setDescription(s.description());
+            st.setDate(s.date());
+            st.setEdict(edict);
+
+            if ("Evento".equals(s.format())) {
+                Event ev = new Event();
+                ev.setStep(st);
+                st.setEvent(ev);
+                st.setActivity(null);
+
+                if ("Online".equals(s.mode())) {
+                    OnlineEvent oe = new OnlineEvent();
+                    oe.setMeetingLink(s.meetingLink());
+                    oe.setEvent(ev);
+                    ev.setOnlineEvent(oe);
+                    ev.setInPerson(null);
+                } else if ("Presencial".equals(s.mode())) {
+                    InPersonEvent pe = new InPersonEvent();
+                    pe.setAddress(s.address());
+                    pe.setEvent(ev);
+                    ev.setInPerson(pe);
+                    ev.setOnlineEvent(null);
+                }
+            } else if ("Atividade".equals(s.format())) {
+                ActivityStep act = new ActivityStep();
+                act.setDueDate(s.dueDate());
+                act.setFile(s.activityFile());
+                act.setStep(st);
+                st.setActivity(act);
+                st.setEvent(null);
+            }
+
+            edict.getSteps().add(st);
+        });
+
+        edictRepository.save(edict);
+    }
+
+    public void delete(Long id){
+        boolean edictAlreadyExists = edictRepository.existsById(id);
+        if (!edictAlreadyExists){
+            throw new EdictExistsException("Edital não encontrado.");
         }
         edictRepository.deleteById(id);
-    }
-    public void EdictActive(Long id, UpdateEdictActiveDto updateEdict){
-     Edict edict = edictRepository.findById(id).orElseThrow(()-> new EdictExistsException("Edict not found"));
-//     edict.setActive(updateEdict.getActive());
-     edictRepository.save(edict);
     }
 }
 

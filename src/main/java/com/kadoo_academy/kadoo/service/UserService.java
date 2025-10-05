@@ -47,17 +47,17 @@ public class UserService {
     public CreateUserDTO createUser(CreateUserDTO responseUserDTO) {
         Optional<User> userAlreadyExists = userRepository.findByEmail(responseUserDTO.email());
 
-        if (userAlreadyExists != null) {
+        if (userAlreadyExists.isPresent()) {
             throw new UserExistsException();
         }
 
         String encoder = this.passwordEncoder.encode(responseUserDTO.password());
 
-
         User user = new User();
         user.setName(responseUserDTO.name());
         user.setEmail(responseUserDTO.email());
         user.setPassword(encoder);
+        user.setCpf(responseUserDTO.cpf());
 
         userRepository.save(user);
         return responseUserDTO;

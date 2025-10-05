@@ -1,21 +1,18 @@
 package com.kadoo_academy.kadoo.dto.request;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public record CreateEdictDTO(
+public record UpdateEdictDTO(
         String title,
         String description,
         String organizer,
+        String contact,
+        String location,
         LocalDate startDate,
         LocalDate endDate,
         String file,
-        String contact,
-        String location,
-        ArrayList<String> categories,
+        List<String> categories,
         List<CreateStepsDTO> steps
 ) {
 }

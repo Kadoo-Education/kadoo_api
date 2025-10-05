@@ -2,6 +2,8 @@ package com.kadoo_academy.kadoo.service;
 
 import com.kadoo_academy.kadoo.dto.request.MultipleUserSubscriptionDTO;
 import com.kadoo_academy.kadoo.dto.request.UserEdictDTO;
+import com.kadoo_academy.kadoo.dto.response.EdictAttachUserDTO;
+import com.kadoo_academy.kadoo.dto.response.EdictDTO;
 import com.kadoo_academy.kadoo.dto.response.ProfileUserResponseDTO;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.UserEdictExistException;
 import com.kadoo_academy.kadoo.models.Edict;
@@ -32,24 +34,13 @@ public class UserEdictService {
     @Autowired
     private TokenService tokenService;
 
-    public UserEdictDTO subscribeUserEdict(UserEdictDTO dto, String token) {
+    public UserEdictDTO subscribeUserEdict(UserEdictDTO dto) {
 
-        ProfileUserResponseDTO profile = tokenService.decodeToken(token);
-
-        Long userId = profile.id();
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User with ID " + userId + " was not found."));
+        User user = userRepository.findById(dto.userId())
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + dto.userId() + " was not found."));
 
         Edict edict = edictRepository.findById(dto.edictId())
                 .orElseThrow(() -> new IllegalArgumentException("Edict with ID " + dto.edictId() + " was not found."));
-
-       /* if (!UserEnum.STUDENT.equals(user.getType())) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Only users of type 'STUDENT' are allowed to apply to edicts."
-            );
-        }*/
 
         boolean alreadySubscribed = userEdictRepository.existsByUserSubscribeAndEdict(user, edict);
         if (alreadySubscribed) {
@@ -65,11 +56,29 @@ public class UserEdictService {
         return dto;
     }
 
-    public List listEdictUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public List<EdictAttachUserDTO> listEdictUser(String token) {
+        ProfileUserResponseDTO profile = tokenService.decodeToken(token);
+        User user = userRepository.findById(profile.id())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         List<UserEdict> userEdicts = userEdictRepository.findByUserSubscribe(user);
-        return userEdicts.stream().map(UserEdict::getEdict).collect(Collectors.toList());
+
+        return userEdicts.stream()
+                .map(ue -> {
+                    Edict e = ue.getEdict();
+                    return new EdictAttachUserDTO(
+                            e.getId(),
+                            e.getTitle(),
+                            e.getDescription(),
+                            e.getStartDate(),
+                            e.getEndDate(),
+                            e.getStatus(),
+                            e.getCategories()
+                    );
+                })
+                .toList();
     }
+
 
     public MultipleUserSubscriptionDTO subscribeMultipleUsersToEdict(MultipleUserSubscriptionDTO dto) {
         Edict edict = edictRepository.findById(dto.edictId()).orElseThrow(() -> new IllegalArgumentException("Edict with ID " + dto.edictId() + " was not found"));

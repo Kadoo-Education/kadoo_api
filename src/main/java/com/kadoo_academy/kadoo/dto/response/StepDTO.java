@@ -6,7 +6,6 @@ public record StepDTO(
         Long id,
         String title,
         String description,
-        String time,
         LocalDate date,
         String format,
         String mode,
