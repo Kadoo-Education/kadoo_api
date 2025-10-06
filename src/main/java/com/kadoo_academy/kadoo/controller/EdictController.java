@@ -52,9 +52,4 @@ public class EdictController {
         edictService.delete(id);
         return ResponseEntity.noContent().build();
     }
-    @PatchMapping("/{id}")
-    public ResponseEntity<UpdateEdictActiveDto> updateEdictActive(@PathVariable ("id") Long id, @RequestBody UpdateEdictActiveDto updateEdictActive){
-        // edictService.EdictActive(id,updateEdictActive);
-        return ResponseEntity.noContent().build();
-    }
 }

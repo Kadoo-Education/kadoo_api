@@ -1,6 +1,7 @@
 package com.kadoo_academy.kadoo.controller;
 
 import com.kadoo_academy.kadoo.dto.response.GetAllStepDTO;
+import com.kadoo_academy.kadoo.dto.response.StepDetailsDTO;
 import com.kadoo_academy.kadoo.service.StepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,4 +32,12 @@ public class StepController {
 
         return ResponseEntity.status(HttpStatus.OK).body(steps);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getByStepId(@PathVariable Long id){
+        StepDetailsDTO steps = stepService.getById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(steps);
+    }
+
 }

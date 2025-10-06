@@ -3,6 +3,7 @@ package com.kadoo_academy.kadoo.service;
 import com.kadoo_academy.kadoo.dto.response.EventDTO;
 import com.kadoo_academy.kadoo.dto.response.GetAllStepDTO;
 import com.kadoo_academy.kadoo.dto.response.StepDTO;
+import com.kadoo_academy.kadoo.dto.response.StepDetailsDTO;
 import com.kadoo_academy.kadoo.models.Event;
 import com.kadoo_academy.kadoo.models.InPersonEvent;
 import com.kadoo_academy.kadoo.models.OnlineEvent;
@@ -106,5 +107,46 @@ public class StepService {
                     eventDTO
             );
         }).toList();
+    }
+
+    public StepDetailsDTO getById(Long id) {
+        Step step = stepRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Etapa não encontrada com id: " + id));
+
+        Event event = step.getEvent();
+        EventDTO eventDTO = null;
+
+        if (event != null) {
+            if (event.getOnlineEvent() != null) {
+                OnlineEvent online = event.getOnlineEvent();
+                eventDTO = new EventDTO(
+                        event.getId(),
+                        "online",
+                        online.getMode(),
+                        online.getFormat(),
+                        online.getMeetingLink(),
+                        null
+                );
+            } else if (event.getInPerson() != null) {
+                InPersonEvent inPerson = event.getInPerson();
+                eventDTO = new EventDTO(
+                        event.getId(),
+                        "presencial",
+                        inPerson.getMode(),
+                        inPerson.getFormat(),
+                        null,
+                        inPerson.getAddress()
+                );
+            }
+        }
+
+        return new StepDetailsDTO(
+                step.getId(),
+                step.getTitle(),
+                step.getDescription(),
+                step.getDate(),
+                step.getStatus(),
+                eventDTO
+        );
     }
 }
