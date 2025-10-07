@@ -10,6 +10,7 @@ import com.kadoo_academy.kadoo.dto.response.StepDTO;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictExistsException;
 import com.kadoo_academy.kadoo.exceptions.customExceptions.EdictNotFoundException;
 import com.kadoo_academy.kadoo.models.*;
+import com.kadoo_academy.kadoo.models.enums.EdictStatusEnum;
 import com.kadoo_academy.kadoo.repositories.EdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserEdictRepository;
 import com.kadoo_academy.kadoo.repositories.UserRepository;
@@ -48,7 +49,7 @@ public class EdictService {
         entity.setTitle(createEdictDTO.title());
         entity.setDescription(createEdictDTO.description());
         entity.setOrganizer(createEdictDTO.organizer());
-        entity.setStatus("Aberto");
+        entity.setStatus(EdictStatusEnum.ABERTO);
         entity.setEndDate(createEdictDTO.endDate());
         entity.setStartDate(createEdictDTO.startDate());
         entity.setPdf(createEdictDTO.file());
@@ -91,7 +92,7 @@ public class EdictService {
                     else if ("Atividade".equals(stepDTO.format())) {
                         ActivityStep activityStep = new ActivityStep();
                         activityStep.setDueDate(stepDTO.dueDate());
-                        activityStep.setFile(stepDTO.activityFile());
+                        activityStep.setFile(stepDTO.file());
                         step.setActivity(activityStep);
                         activityStep.setStep(step);
                     }
@@ -239,7 +240,7 @@ public class EdictService {
             } else if ("Atividade".equals(s.format())) {
                 ActivityStep act = new ActivityStep();
                 act.setDueDate(s.dueDate());
-                act.setFile(s.activityFile());
+                act.setFile(s.file());
                 act.setStep(st);
                 st.setActivity(act);
                 st.setEvent(null);

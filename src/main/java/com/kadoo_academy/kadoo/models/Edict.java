@@ -1,5 +1,6 @@
 package com.kadoo_academy.kadoo.models;
 
+import com.kadoo_academy.kadoo.models.enums.EdictStatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,7 +50,7 @@ public class Edict {
         private ArrayList<String> categories = new ArrayList<>();
 
         @Column(name = "status", nullable = false)
-        private String status;
+        private EdictStatusEnum status;
 
         @Column(name = "location", nullable = false)
         private String location;

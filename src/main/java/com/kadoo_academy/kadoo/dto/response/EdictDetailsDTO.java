@@ -1,5 +1,7 @@
 package com.kadoo_academy.kadoo.dto.response;
 
+import com.kadoo_academy.kadoo.models.enums.EdictStatusEnum;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public record EdictDetailsDTO(
         String organizer,
         String contact,
         String file,
-        String status,
+        EdictStatusEnum status,
         String location,
         ArrayList<String> categories,
         List<StepDTO> steps

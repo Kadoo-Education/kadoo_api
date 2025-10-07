@@ -1,8 +1,8 @@
 package com.kadoo_academy.kadoo.service;
 
+import com.kadoo_academy.kadoo.dto.response.ActivityDTO;
 import com.kadoo_academy.kadoo.dto.response.EventDTO;
 import com.kadoo_academy.kadoo.dto.response.GetAllStepDTO;
-import com.kadoo_academy.kadoo.dto.response.StepDTO;
 import com.kadoo_academy.kadoo.dto.response.StepDetailsDTO;
 import com.kadoo_academy.kadoo.models.Event;
 import com.kadoo_academy.kadoo.models.InPersonEvent;
@@ -113,29 +113,48 @@ public class StepService {
         Step step = stepRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Etapa não encontrada com id: " + id));
 
-        Event event = step.getEvent();
-        EventDTO eventDTO = null;
+        final String type;
+        if (step.getEvent() != null) {
+            type = "Evento";
+        } else if (step.getActivity() != null) {
+            type = "Atividade";
+        } else {
+            throw new RuntimeException("Etapa sem Evento ou Atividade. ID: " + id);
+        }
 
-        if (event != null) {
-            if (event.getOnlineEvent() != null) {
-                OnlineEvent online = event.getOnlineEvent();
-                eventDTO = new EventDTO(
-                        event.getId(),
-                        "online",
-                        online.getMode(),
-                        online.getFormat(),
-                        online.getMeetingLink(),
-                        null
-                );
-            } else if (event.getInPerson() != null) {
-                InPersonEvent inPerson = event.getInPerson();
-                eventDTO = new EventDTO(
-                        event.getId(),
-                        "presencial",
-                        inPerson.getMode(),
-                        inPerson.getFormat(),
-                        null,
-                        inPerson.getAddress()
+        EventDTO eventDTO = null;
+        ActivityDTO activityDTO = null;
+
+        if ("Evento".equals(type)) {
+            Event event = step.getEvent();
+            if (event != null) {
+                if (event.getOnlineEvent() != null) {
+                    OnlineEvent online = event.getOnlineEvent();
+                    eventDTO = new EventDTO(
+                            event.getId(),
+                            "online",
+                            online.getMode(),
+                            online.getFormat(),
+                            online.getMeetingLink(),
+                            null
+                    );
+                } else if (event.getInPerson() != null) {
+                    InPersonEvent inPerson = event.getInPerson();
+                    eventDTO = new EventDTO(
+                            event.getId(),
+                            "presencial",
+                            inPerson.getMode(),
+                            inPerson.getFormat(),
+                            null,
+                            inPerson.getAddress()
+                    );
+                }
+            }
+        } else {
+            if (step.getActivity() != null) {
+                activityDTO = new ActivityDTO(
+                        step.getActivity().getDueDate(),
+                        step.getActivity().getFile()
                 );
             }
         }
@@ -146,7 +165,9 @@ public class StepService {
                 step.getDescription(),
                 step.getDate(),
                 step.getStatus(),
-                eventDTO
+                type,
+                eventDTO,
+                activityDTO
         );
     }
 }

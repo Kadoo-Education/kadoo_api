@@ -12,6 +12,6 @@ public record CreateStepsDTO(
         String address,
         String meetingLink,
         LocalDate dueDate,
-        String activityFile
+        String file
 ) {
 }
