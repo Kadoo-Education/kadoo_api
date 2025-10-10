@@ -33,6 +33,8 @@ public class SecurityConfig {
                                 .requestMatchers("/admin-profile").permitAll()
                                 .requestMatchers("/enterprise-profile").permitAll()
                                 .requestMatchers("/steps").permitAll()
+                                .requestMatchers("/event/**").permitAll()
+                                .requestMatchers("/activity-step/**").permitAll()
                                 .anyRequest().authenticated())
                 .cors(cors -> cors
                         .configurationSource(request -> {
