@@ -30,4 +30,6 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+
+
 }

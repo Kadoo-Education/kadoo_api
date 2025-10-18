@@ -31,12 +31,6 @@ public class EdictService {
     private EdictRepository edictRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserEdictRepository userEdictRepository;
-
-    @Autowired
     private TokenService tokenService;
 
     public void create(CreateEdictDTO createEdictDTO, String token){
@@ -57,51 +51,6 @@ public class EdictService {
         entity.setCategories(createEdictDTO.categories());
         entity.setLocation(createEdictDTO.location());
         entity.setUser(user);
-
-        List<Step> steps = createEdictDTO.steps().stream()
-                .map(stepDTO -> {
-                    Step step = new Step();
-                    step.setTitle(stepDTO.title());
-                    step.setDescription(stepDTO.description());
-
-                    step.setDate(stepDTO.date());
-                    step.setEdict(entity);
-
-                    if ("Evento".equals(stepDTO.format())) {
-                        Event event = new Event();
-
-                        if("Presencial".equals(stepDTO.mode())) {
-                            InPersonEvent inPersonEvent = new InPersonEvent();
-                            inPersonEvent.setAddress(stepDTO.address());
-                            inPersonEvent.setMode(stepDTO.mode());
-                            inPersonEvent.setFormat(stepDTO.format());
-                            inPersonEvent.setEvent(event);
-                            event.setInPerson(inPersonEvent);
-                        } else if("Online".equals(stepDTO.mode())) {
-                            OnlineEvent onlineEvent = new OnlineEvent();
-                            onlineEvent.setMeetingLink(stepDTO.meetingLink());
-                            onlineEvent.setMode(stepDTO.mode());
-                            onlineEvent.setFormat(stepDTO.format());
-                            onlineEvent.setEvent(event);
-                            event.setOnlineEvent(onlineEvent);
-                        }
-                        event.setStep(step);
-                        step.setEvent(event);
-                    }
-
-                    else if ("Atividade".equals(stepDTO.format())) {
-                        ActivityStep activityStep = new ActivityStep();
-                        activityStep.setDueDate(stepDTO.dueDate());
-                        activityStep.setFile(stepDTO.file());
-                        step.setActivity(activityStep);
-                        activityStep.setStep(step);
-                    }
-                    return step;
-                })
-                .toList();
-
-
-        entity.setSteps(steps);
         edictRepository.save(entity);
     }
 
@@ -131,6 +80,7 @@ public class EdictService {
         Edict edict = edictRepository.findById(id)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Edital não encontrado."));
+
 
         return new EdictDetailsDTO(
                 edict.getId(),
@@ -198,6 +148,7 @@ public class EdictService {
     public void update(Long id, UpdateEdictDTO dto) {
 
         Edict edict = edictRepository.findById(id).orElseThrow(() -> new EdictNotFoundException("Edict not found"));
+
         edict.setTitle(dto.title());
         edict.setDescription(dto.description());
         edict.setOrganizer(dto.organizer());
@@ -208,46 +159,6 @@ public class EdictService {
         edict.setPdf(dto.file());
         edict.getCategories().clear();
         edict.getCategories().addAll(dto.categories());
-
-
-        edict.getSteps().clear();
-        dto.steps().forEach(s -> {
-            Step st = new Step();
-            st.setTitle(s.title());
-            st.setDescription(s.description());
-            st.setDate(s.date());
-            st.setEdict(edict);
-
-            if ("Evento".equals(s.format())) {
-                Event ev = new Event();
-                ev.setStep(st);
-                st.setEvent(ev);
-                st.setActivity(null);
-
-                if ("Online".equals(s.mode())) {
-                    OnlineEvent oe = new OnlineEvent();
-                    oe.setMeetingLink(s.meetingLink());
-                    oe.setEvent(ev);
-                    ev.setOnlineEvent(oe);
-                    ev.setInPerson(null);
-                } else if ("Presencial".equals(s.mode())) {
-                    InPersonEvent pe = new InPersonEvent();
-                    pe.setAddress(s.address());
-                    pe.setEvent(ev);
-                    ev.setInPerson(pe);
-                    ev.setOnlineEvent(null);
-                }
-            } else if ("Atividade".equals(s.format())) {
-                ActivityStep act = new ActivityStep();
-                act.setDueDate(s.dueDate());
-                act.setFile(s.file());
-                act.setStep(st);
-                st.setActivity(act);
-                st.setEvent(null);
-            }
-
-            edict.getSteps().add(st);
-        });
 
         edictRepository.save(edict);
     }

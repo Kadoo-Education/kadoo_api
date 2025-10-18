@@ -15,7 +15,6 @@ public record CreateEdictDTO(
         String file,
         String contact,
         String location,
-        ArrayList<String> categories,
-        List<CreateStepsDTO> steps
+        ArrayList<String> categories
 ) {
 }

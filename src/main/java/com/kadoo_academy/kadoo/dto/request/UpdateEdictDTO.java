@@ -12,7 +12,6 @@ public record UpdateEdictDTO(
         LocalDate startDate,
         LocalDate endDate,
         String file,
-        List<String> categories,
-        List<CreateStepsDTO> steps
+        List<String> categories
 ) {
 }
